@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | <%= siteName %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+  <%- include('partials/navbar') %>
+
+  <main class="flex-1 max-w-3xl mx-auto px-4 py-10 w-full">
+    <header class="mb-6 text-center">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+        <i class="fa-solid fa-robot text-blue-800 mr-2"></i>Tanya AI
+      </h1>
+      <p class="text-gray-600 text-sm md:text-base">
+        Tanyakan seputar produk sembako kami. (Fitur balasan otomatis akan
+        tersedia di sesi berikutnya)
+      </p>
+    </header>
+
+    <section aria-label="Riwayat percakapan" class="bg-white rounded-xl shadow p-4 md:p-6 mb-6">
+      <ul class="flex flex-col gap-4" id="chat-log">
+        <li class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-full bg-blue-800 text-white flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-robot text-sm"></i>
+          </div>
+          <div class="bg-blue-50 text-gray-700 text-sm px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]">
+            Halo! Ada yang bisa saya bantu terkait produk sembako di
+            <%= siteName %>?
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Form Tanya AI (aksesibel, belum ada logic balasan) -->
+    <section aria-labelledby="form-title" class="bg-white rounded-xl shadow p-4 md:p-6">
+      <h2 id="form-title" class="sr-only">Form Pertanyaan</h2>
+      <form action="/tanya-ai" method="POST" class="flex flex-col gap-4">
+        <div>
+          <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">
+            Nama Anda
+          </label>
+          <input
+            type="text"
+            id="nama"
+            name="nama"
+            placeholder="Masukkan nama Anda"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-700"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="pertanyaan" class="block text-sm font-medium text-gray-700 mb-1">
+            Pertanyaan
+          </label>
+          <textarea
+            id="pertanyaan"
+            name="pertanyaan"
+            rows="3"
+            placeholder="Contoh: Apakah beras premium tersedia dalam kemasan 10kg?"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-700"
+            required
+          ></textarea>
+        </div>
+
+        <button
+          type="submit"
+          class="self-end bg-blue-800 text-white font-medium px-6 py-2.5 rounded-lg hover:bg-blue-900 transition text-sm"
+        >
+          <i class="fa-solid fa-paper-plane mr-2"></i>Kirim Pertanyaan
+        </button>
+      </form>
+      <p class="text-xs text-gray-400 mt-3">
+        * Fitur balasan otomatis (AI) belum aktif di Sprint 1 ini.
+      </p>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

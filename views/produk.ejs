@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | <%= siteName %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+  <%- include('partials/navbar') %>
+
+  <main class="flex-1 max-w-6xl mx-auto px-4 py-10 w-full">
+    <header class="mb-8">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Daftar Produk</h1>
+      <p class="text-gray-600 text-sm md:text-base">
+        Temukan kebutuhan sembako harian Anda di sini.
+      </p>
+    </header>
+
+    <!-- Form Filter / Search -->
+    <section aria-labelledby="filter-title" class="bg-white rounded-xl shadow p-4 md:p-6 mb-8">
+      <h2 id="filter-title" class="sr-only">Filter Produk</h2>
+      <form action="/produk" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <div class="md:col-span-2">
+          <label for="search" class="block text-sm font-medium text-gray-700 mb-1">
+            Cari Produk
+          </label>
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input
+              type="text"
+              id="search"
+              name="search"
+              value="<%= searchQuery %>"
+              placeholder="cth: beras, minyak..."
+              class="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-700"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">
+            Kategori
+          </label>
+          <select
+            id="kategori"
+            name="kategori"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-700"
+          >
+            <option value="">Semua Kategori</option>
+            <% categories.forEach(function(cat) { %>
+              <option value="<%= cat %>" <%= selectedCategory === cat ? 'selected' : '' %>>
+                <%= cat.charAt(0).toUpperCase() + cat.slice(1) %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div class="flex gap-2">
+          <button
+            type="submit"
+            class="w-full bg-blue-800 text-white font-medium py-2 rounded-lg hover:bg-blue-900 transition text-sm"
+          >
+            <i class="fa-solid fa-filter mr-1"></i> Terapkan
+          </button>
+          <% if (selectedCategory || searchQuery) { %>
+            <a href="/produk"
+               class="w-full flex items-center justify-center bg-gray-100 text-gray-600 font-medium py-2 rounded-lg hover:bg-gray-200 transition text-sm">
+              Reset
+            </a>
+          <% } %>
+        </div>
+      </form>
+    </section>
+
+    <p class="text-sm text-gray-500 mb-4" role="status">
+      Menampilkan <%= totalFound %> produk
+      <% if (selectedCategory) { %> dalam kategori "<%= selectedCategory %>"<% } %>
+      <% if (searchQuery) { %> dengan kata kunci "<%= searchQuery %>"<% } %>
+    </p>
+
+    <!-- Grid Produk -->
+    <% if (allProducts.length > 0) { %>
+      <section aria-label="Daftar produk" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% allProducts.forEach(function(product) { %>
+          <article class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden flex flex-col">
+            <img src="<%= product.image %>" alt="<%= product.name %>" class="w-full h-44 object-cover" />
+            <div class="p-4 flex flex-col flex-1">
+              <span class="text-xs font-medium text-blue-800 uppercase tracking-wide mb-1">
+                <%= product.category %>
+              </span>
+              <h2 class="font-semibold text-gray-800 mb-1"><%= product.name %></h2>
+              <p class="text-red-600 font-bold mb-1">
+                Rp<%= product.price.toLocaleString('id-ID') %>
+              </p>
+              <p class="text-xs text-gray-500 mb-3">Stok: <%= product.stock %></p>
+              <a href="/produk/<%= product.id %>"
+                 class="mt-auto inline-block text-center bg-blue-800 text-white text-sm font-medium py-2 rounded-lg hover:bg-blue-900 transition">
+                Lihat Detail
+              </a>
+            </div>
+          </article>
+        <% }); %>
+      </section>
+    <% } else { %>
+      <div class="bg-white rounded-xl shadow p-10 text-center" role="status">
+        <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-4"></i>
+        <p class="text-gray-600">Produk tidak ditemukan untuk filter/pencarian ini.</p>
+        <a href="/produk" class="inline-block mt-4 text-blue-800 font-medium hover:underline">
+          Reset filter
+        </a>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

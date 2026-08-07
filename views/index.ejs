@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | <%= siteName %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+  <%- include('partials/navbar') %>
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-900 to-blue-700 text-white border-b-4 border-yellow-400" aria-labelledby="hero-title">
+      <div class="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <span class="inline-block bg-yellow-400 text-blue-950 text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-4">
+            Harga Hemat Setiap Hari
+          </span>
+          <h1 id="hero-title" class="text-3xl md:text-5xl font-bold leading-tight mb-4">
+            Belanja Sembako Mudah, Harga Bersahabat
+          </h1>
+          <p class="text-blue-50 text-base md:text-lg mb-6">
+            <%= siteName %> menyediakan kebutuhan pokok harian dengan kualitas
+            terjamin, langsung dari toko kepercayaan warga sekitar.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a href="/produk"
+               class="bg-white text-blue-800 font-semibold px-6 py-3 rounded-lg shadow hover:bg-blue-50 transition">
+              <i class="fa-solid fa-store mr-2"></i>Lihat Semua Produk
+            </a>
+            <a href="/tanya-ai"
+               class="bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow hover:bg-red-700 transition">
+              <i class="fa-solid fa-comments mr-2"></i>Tanya AI
+            </a>
+          </div>
+        </div>
+        <div class="hidden md:block">
+          <img src="https://placehold.co/500x350/ffffff/0056A4?text=Toko+Berkah"
+               alt="Ilustrasi toko sembako Ibu Aries" class="rounded-xl shadow-2xl w-full" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Preview Produk -->
+    <section class="max-w-6xl mx-auto px-4 py-12 md:py-16" aria-labelledby="preview-title">
+      <div class="flex items-center justify-between mb-8">
+        <h2 id="preview-title" class="text-2xl md:text-3xl font-bold text-gray-800">
+          Produk Pilihan
+        </h2>
+        <a href="/produk" class="text-blue-800 font-medium hover:underline text-sm md:text-base">
+          Lihat semua <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <% previewProducts.forEach(function(product) { %>
+          <article class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden flex flex-col">
+            <img src="<%= product.image %>" alt="<%= product.name %>" class="w-full h-40 object-cover" />
+            <div class="p-4 flex flex-col flex-1">
+              <span class="text-xs font-medium text-blue-800 uppercase tracking-wide mb-1">
+                <%= product.category %>
+              </span>
+              <h3 class="font-semibold text-gray-800 mb-2"><%= product.name %></h3>
+              <p class="text-red-600 font-bold mb-3">
+                Rp<%= product.price.toLocaleString('id-ID') %>
+              </p>
+              <a href="/produk/<%= product.id %>"
+                 class="mt-auto inline-block text-center bg-blue-800 text-white text-sm font-medium py-2 rounded-lg hover:bg-blue-900 transition">
+                Lihat Detail
+              </a>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    </section>
+
+    <!-- Kenapa Belanja di Sini -->
+    <section class="bg-white border-t border-gray-100" aria-labelledby="why-title">
+      <div class="max-w-6xl mx-auto px-4 py-12 md:py-16">
+        <h2 id="why-title" class="text-2xl md:text-3xl font-bold text-center mb-10">
+          Kenapa Belanja di <%= siteName %>?
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          <div class="p-6">
+            <i class="fa-solid fa-tags text-3xl text-blue-800 mb-3"></i>
+            <h3 class="font-semibold mb-2">Harga Bersahabat</h3>
+            <p class="text-sm text-gray-600">Harga stabil dan terjangkau untuk kebutuhan sehari-hari.</p>
+          </div>
+          <div class="p-6">
+            <i class="fa-solid fa-truck-fast text-3xl text-red-600 mb-3"></i>
+            <h3 class="font-semibold mb-2">Stok Selalu Tersedia</h3>
+            <p class="text-sm text-gray-600">Stok dipantau setiap hari agar selalu siap saat dibutuhkan.</p>
+          </div>
+          <div class="p-6">
+            <i class="fa-solid fa-heart text-3xl text-yellow-500 mb-3"></i>
+            <h3 class="font-semibold mb-2">Pelayanan Ramah</h3>
+            <p class="text-sm text-gray-600">Dilayani dengan sepenuh hati seperti belanja di toko keluarga.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
