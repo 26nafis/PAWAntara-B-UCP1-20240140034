@@ -1,0 +1,43 @@
+/* public/css/style.css
+   Styling tambahan di luar utility class Tailwind.
+   Tailwind (CDN) menangani sebagian besar layout responsif lewat
+   breakpoint bawaan (sm, md, lg). File ini menambah 2 media query
+   eksplisit sesuai ketentuan tugas (mobile & desktop). */
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+/* Fokus aksesibel yang lebih jelas untuk keyboard navigation */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #0056a4;
+  outline-offset: 2px;
+}
+
+/* ===================== BREAKPOINT MOBILE ===================== */
+/* Maksimal 767px: perbesar sedikit ukuran tombol agar mudah disentuh */
+@media (max-width: 767px) {
+  #hamburger-btn {
+    padding: 0.6rem;
+  }
+
+  h1 {
+    line-height: 1.25;
+  }
+}
+
+/* ===================== BREAKPOINT DESKTOP ===================== */
+/* Minimal 1024px: batasi lebar konten agar tidak terlalu melebar */
+@media (min-width: 1024px) {
+  main {
+    max-width: 1152px;
+  }
+}
