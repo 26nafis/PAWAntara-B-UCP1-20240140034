@@ -1,0 +1,72 @@
+<%- include('partials/navbar') %>
+
+<div class="container my-5">
+  <h2 class="mb-4">Dashboard Kelola Produk</h2>
+
+  <div class="row">
+    <!-- Form Produk -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 id="formTitle">Tambah Produk Baru</h5>
+          <form id="productForm">
+            <input type="hidden" id="productId" />
+
+            <div class="mb-2">
+              <label for="name" class="form-label">Nama Produk</label>
+              <input type="text" id="name" class="form-control" required />
+            </div>
+
+            <div class="mb-2">
+              <label for="category" class="form-label">Kategori</label>
+              <input type="text" id="category" class="form-control" required />
+            </div>
+
+            <div class="mb-2">
+              <label for="price" class="form-label">Harga (Rp)</label>
+              <input type="number" id="price" class="form-control" required />
+            </div>
+
+            <div class="mb-2">
+              <label for="stock" class="form-label">Stok</label>
+              <input type="number" id="stock" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+              <label for="image" class="form-label">URL Gambar</label>
+              <input type="url" id="image" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 mb-2">Simpan</button>
+            <button type="button" id="btnCancel" class="btn btn-secondary w-100 d-none">Batal</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabel Produk -->
+    <div class="col-md-8">
+      <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover align-middle bg-white mb-0">
+          <thead class="table-success">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Gambar</th>
+              <th scope="col">Nama</th>
+              <th scope="col">Kategori</th>
+              <th scope="col">Harga</th>
+              <th scope="col">Stok</th>
+              <th scope="col">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="productTableBody">
+            <!-- Diisi via Fetch API -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/dashboard.js"></script>
+<%- include('partials/footer') %>
