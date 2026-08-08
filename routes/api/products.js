@@ -2,14 +2,44 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
+const multer = require('multer');
 const { requireAuthApi } = require('../../middleware/auth');
 
+// Path ke file JSON database produk
 const productsFilePath = path.join(__dirname, '../../data/products.json');
 
+// ------------------------------------------------------
+// Konfigurasi Multer untuk Upload Gambar
+// ------------------------------------------------------
+const uploadDir = path.join(__dirname, '../../public/uploads');
+
+// Pastikan direktori public/uploads ada
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, 'product-' + uniqueSuffix + ext);
+  }
+});
+
+const upload = multer({ storage });
+
+// Helper Read & Write File JSON
 const getProductsData = () => {
   if (!fs.existsSync(productsFilePath)) return [];
   const data = fs.readFileSync(productsFilePath, 'utf-8');
-  return JSON.parse(data);
+  try {
+    return JSON.parse(data);
+  } catch (err) {
+    return [];
+  }
 };
 
 const saveProductsData = (data) => {
@@ -40,22 +70,31 @@ router.get('/:id', (req, res) => {
   }
 });
 
-// POST /api/products (Proteksi Session)
-router.post('/', requireAuthApi, (req, res) => {
+// POST /api/products (Tambah Produk dengan Upload Gambar, Deskripsi & Proteksi Session)
+router.post('/', requireAuthApi, upload.single('image'), (req, res) => {
   try {
-    const { name, price, stock, category, image } = req.body;
+    const { name, price, stock, category, description } = req.body;
     if (!name || !price || stock === undefined || !category) {
       return res.status(400).json({ status: 'fail', message: 'Data produk tidak lengkap' });
+    }
+
+    // Tentukan URL/path gambar
+    let imagePath = 'https://placehold.co/300x300/e2e8f0/475569?text=No+Image';
+    if (req.file) {
+      imagePath = `/uploads/${req.file.filename}`;
+    } else if (req.body.image && req.body.image.trim() !== '') {
+      imagePath = req.body.image;
     }
 
     const products = getProductsData();
     const newProduct = {
       id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
       name,
+      category,
+      description: description || '',
       price: Number(price),
       stock: Number(stock),
-      category,
-      image: image || 'https://via.placeholder.com/150'
+      image: imagePath
     };
 
     products.push(newProduct);
@@ -67,11 +106,11 @@ router.post('/', requireAuthApi, (req, res) => {
   }
 });
 
-// PUT /api/products/:id (Proteksi Session)
-router.put('/:id', requireAuthApi, (req, res) => {
+// PUT /api/products/:id (Update Produk dengan Upload Gambar Baru/Tetap, Deskripsi & Proteksi Session)
+router.put('/:id', requireAuthApi, upload.single('image'), (req, res) => {
   try {
     const productId = parseInt(req.params.id);
-    const { name, price, stock, category, image } = req.body;
+    const { name, price, stock, category, description } = req.body;
     const products = getProductsData();
     const index = products.findIndex(p => p.id === productId);
 
@@ -79,13 +118,22 @@ router.put('/:id', requireAuthApi, (req, res) => {
       return res.status(404).json({ status: 'fail', message: 'Produk tidak ditemukan' });
     }
 
+    // Tentukan path gambar: gunakan file upload baru > URL body > gambar lama
+    let imagePath = products[index].image;
+    if (req.file) {
+      imagePath = `/uploads/${req.file.filename}`;
+    } else if (req.body.image && req.body.image.trim() !== '') {
+      imagePath = req.body.image;
+    }
+
     products[index] = {
       ...products[index],
       name: name || products[index].name,
+      category: category || products[index].category,
+      description: description !== undefined ? description : (products[index].description || ''),
       price: price !== undefined ? Number(price) : products[index].price,
       stock: stock !== undefined ? Number(stock) : products[index].stock,
-      category: category || products[index].category,
-      image: image || products[index].image
+      image: imagePath
     };
 
     saveProductsData(products);
@@ -116,3 +164,4 @@ router.delete('/:id', requireAuthApi, (req, res) => {
 });
 
 module.exports = router;
+module.exports.getProductsData = getProductsData;

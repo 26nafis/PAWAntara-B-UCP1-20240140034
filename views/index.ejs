@@ -3,107 +3,193 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %> | <%= siteName %></title>
+  <title><%= typeof title !== 'undefined' ? title : 'Beranda' %> | <%= typeof siteName !== 'undefined' ? siteName : 'Toko Berkah Ibu Aries' %></title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen font-sans antialiased">
 
   <!-- Navbar -->
   <%- include('partials/navbar') %>
 
-  <main class="flex-1">
-    <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-blue-900 to-blue-700 text-white border-b-4 border-yellow-400" aria-labelledby="hero-title">
-      <div class="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-8 items-center">
-        <div>
-          <span class="inline-block bg-yellow-400 text-blue-950 text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-4">
-            Harga Hemat Setiap Hari
+  <!-- Main Container -->
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    
+    <!-- Hero Banner Section -->
+    <section class="relative bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white rounded-3xl p-8 sm:p-12 md:p-16 mb-16 shadow-2xl overflow-hidden border border-blue-700/50">
+      
+      <!-- Ambient Background Elements -->
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+        
+        <!-- Text Content -->
+        <div class="lg:col-span-7 text-center lg:text-left">
+          <span class="inline-flex items-center gap-2 bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-semibold uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-6 backdrop-blur-md">
+            <i class="fa-solid fa-sparkles text-amber-400"></i> Pilihan Utama Sembako Keluarga
           </span>
-          <h1 id="hero-title" class="text-3xl md:text-5xl font-bold leading-tight mb-4">
-            Belanja Sembako Mudah, Harga Bersahabat
+          
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black mb-6 leading-tight tracking-tight">
+            Belanja Sembako <br class="hidden sm:block" />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400">Mudah & Hemat</span>
           </h1>
-          <p class="text-blue-50 text-base md:text-lg mb-6">
-            <%= siteName %> menyediakan kebutuhan pokok harian dengan kualitas
-            terjamin, langsung dari toko kepercayaan warga sekitar.
+          
+          <p class="text-blue-100 text-base sm:text-lg mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal opacity-90">
+            <%= typeof siteName !== 'undefined' ? siteName : 'Toko Berkah Ibu Aries' %> menyediakan kebutuhan pokok harian dengan jaminan harga bersahabat dan kualitas terbaik langsung untuk rumah Anda.
           </p>
-          <div class="flex flex-wrap gap-3">
-            <a href="/produk"
-               class="bg-white text-blue-800 font-semibold px-6 py-3 rounded-lg shadow hover:bg-blue-50 transition">
-              <i class="fa-solid fa-store mr-2"></i>Lihat Semua Produk
+
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+            <a href="/produk" class="w-full sm:w-auto inline-flex items-center justify-center bg-amber-400 text-slate-950 font-bold px-7 py-3.5 rounded-2xl shadow-lg shadow-amber-400/20 hover:bg-amber-300 transition-all duration-200 transform hover:-translate-y-0.5 text-base">
+              <i class="fa-solid fa-bag-shopping mr-2.5"></i> Lihat Katalog Produk
             </a>
-            <a href="/tanya-ai"
-               class="bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow hover:bg-red-700 transition">
-              <i class="fa-solid fa-comments mr-2"></i>Tanya AI
+            <a href="/tanya-ai" class="w-full sm:w-auto inline-flex items-center justify-center bg-white/10 hover:bg-white/20 text-white font-semibold px-7 py-3.5 rounded-2xl border border-white/20 backdrop-blur-md transition-all duration-200 text-base">
+              <i class="fa-solid fa-robot mr-2.5 text-amber-300"></i> Tanya Asisten AI
             </a>
           </div>
+
+          <!-- Quick Stats / Badges -->
+          <div class="mt-12 pt-8 border-t border-white/10 grid grid-cols-3 gap-4 text-center lg:text-left">
+            <div>
+              <p class="text-xl sm:text-2xl font-black text-white">100%</p>
+              <p class="text-xs text-blue-200">Produk Original</p>
+            </div>
+            <div>
+              <p class="text-xl sm:text-2xl font-black text-amber-300">Ramah</p>
+              <p class="text-xs text-blue-200">Pelayanan Keluarga</p>
+            </div>
+            <div>
+              <p class="text-xl sm:text-2xl font-black text-white">Setiap Hari</p>
+              <p class="text-xs text-blue-200">Stok Diperbarui</p>
+            </div>
+          </div>
         </div>
-        <div class="hidden md:block">
-          <img src="https://placehold.co/500x350/ffffff/0056A4?text=Toko+Berkah"
-               alt="Ilustrasi toko sembako Ibu Aries" class="rounded-xl shadow-2xl w-full" />
+
+        <!-- Hero Card Illustration -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="relative w-full max-w-md">
+            <div class="bg-gradient-to-tr from-white/10 to-white/5 border border-white/20 rounded-3xl p-6 backdrop-blur-xl shadow-2xl">
+              
+              <!-- Card Inner (Latar Putih Telah Diganti dengan Transparan Kaca) -->
+              <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 text-center shadow-inner flex flex-col items-center justify-center min-h-[280px]">
+                
+                <!-- Lingkaran Foto Logo -->
+                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-4 shadow-md overflow-hidden border-2 border-amber-400/80">
+                  <img 
+                    src="/images/Logo.png" 
+                    alt="Logo Toko Berkah" 
+                    class="w-full h-full object-cover"
+                    onerror="this.onerror=null; this.src='/images/logo.png';"
+                  />
+                </div>
+
+                <h3 class="text-2xl font-black text-white mb-1">Toko Berkah</h3>
+                <p class="text-blue-100 text-sm font-medium">Ibu Aries</p>
+                <span class="mt-4 inline-flex items-center gap-1.5 px-3.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold rounded-full backdrop-blur-sm">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Buka Hari Ini
+                </span>
+
+              </div>
+
+            </div>
+          </div>
         </div>
+
       </div>
     </section>
 
-    <!-- Preview Produk -->
-    <section class="max-w-6xl mx-auto px-4 py-12 md:py-16" aria-labelledby="preview-title">
-      <div class="flex items-center justify-between mb-8">
-        <h2 id="preview-title" class="text-2xl md:text-3xl font-bold text-gray-800">
-          Produk Pilihan
-        </h2>
-        <a href="/produk" class="text-blue-800 font-medium hover:underline text-sm md:text-base">
-          Lihat semua <i class="fa-solid fa-arrow-right ml-1"></i>
+    <!-- Section Produk Pilihan -->
+    <section class="mb-16">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
+        <div>
+          <span class="text-xs font-bold text-blue-800 tracking-widest uppercase mb-1 block">Katalog Unggulan</span>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Produk Pilihan Hari Ini</h2>
+        </div>
+        <a href="/produk" class="inline-flex items-center gap-2 text-sm font-bold text-blue-800 hover:text-blue-900 transition-colors group">
+          Lihat Semua Produk <i class="fa-solid fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
         </a>
       </div>
 
+      <!-- Grid Produk -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <% previewProducts.forEach(function(product) { %>
-          <article class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden flex flex-col">
-            <img src="<%= product.image %>" alt="<%= product.name %>" class="w-full h-40 object-cover" />
-            <div class="p-4 flex flex-col flex-1">
-              <span class="text-xs font-medium text-blue-800 uppercase tracking-wide mb-1">
-                <%= product.category %>
-              </span>
-              <h3 class="font-semibold text-gray-800 mb-2"><%= product.name %></h3>
-              <p class="text-red-600 font-bold mb-3">
-                Rp<%= product.price.toLocaleString('id-ID') %>
-              </p>
-              <a href="/produk/<%= product.id %>"
-                 class="mt-auto inline-block text-center bg-blue-800 text-white text-sm font-medium py-2 rounded-lg hover:bg-blue-900 transition">
-                Lihat Detail
-              </a>
-            </div>
-          </article>
-        <% }); %>
+        <% if (typeof previewProducts !== 'undefined' && previewProducts.length > 0) { %>
+          <% previewProducts.forEach(function(product) { %>
+            <article class="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between hover:-translate-y-1">
+              <div>
+                <!-- Product Image Box -->
+                <div class="relative bg-slate-100 h-48 w-full overflow-hidden">
+                  <img src="<%= product.image %>" alt="<%= product.name %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-800 text-[10px] font-black px-2.5 py-1 rounded-md shadow-sm uppercase tracking-wider border border-slate-100">
+                    <%= product.category %>
+                  </span>
+                </div>
+                
+                <!-- Product Info -->
+                <div class="p-5">
+                  <h3 class="font-bold text-slate-800 text-base mb-2 group-hover:text-blue-800 transition-colors line-clamp-2">
+                    <%= product.name %>
+                  </h3>
+                  <div class="flex items-baseline gap-1">
+                    <span class="text-xs text-slate-400 font-semibold">Rp</span>
+                    <span class="text-xl font-black text-red-600">
+                      <%= product.price.toLocaleString('id-ID') %>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card Action -->
+              <div class="p-5 pt-0">
+                <a href="/produk/<%= product.id %>" class="w-full bg-slate-900 text-white hover:bg-blue-800 text-center py-2.5 rounded-xl block font-bold text-sm transition-colors duration-200 shadow-sm">
+                  Lihat Detail
+                </a>
+              </div>
+            </article>
+          <% }); %>
+        <% } else { %>
+          <div class="col-span-full bg-white rounded-2xl p-12 text-center border border-slate-100">
+            <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-3"></i>
+            <p class="text-slate-500 font-medium">Belum ada produk pilihan yang tersedia.</p>
+          </div>
+        <% } %>
       </div>
     </section>
 
-    <!-- Kenapa Belanja di Sini -->
-    <section class="bg-white border-t border-gray-100" aria-labelledby="why-title">
-      <div class="max-w-6xl mx-auto px-4 py-12 md:py-16">
-        <h2 id="why-title" class="text-2xl md:text-3xl font-bold text-center mb-10">
-          Kenapa Belanja di <%= siteName %>?
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div class="p-6">
-            <i class="fa-solid fa-tags text-3xl text-blue-800 mb-3"></i>
-            <h3 class="font-semibold mb-2">Harga Bersahabat</h3>
-            <p class="text-sm text-gray-600">Harga stabil dan terjangkau untuk kebutuhan sehari-hari.</p>
+    <!-- Keunggulan Section -->
+    <section class="bg-white rounded-3xl p-8 sm:p-12 border border-slate-100 shadow-sm">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs font-bold text-blue-800 tracking-widest uppercase mb-2 block">Komitmen Kami</span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Kenapa Belanja di Toko Berkah?</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100/80 text-center hover:bg-white hover:shadow-md transition-all duration-200">
+          <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
+            <i class="fa-solid fa-tags"></i>
           </div>
-          <div class="p-6">
-            <i class="fa-solid fa-truck-fast text-3xl text-red-600 mb-3"></i>
-            <h3 class="font-semibold mb-2">Stok Selalu Tersedia</h3>
-            <p class="text-sm text-gray-600">Stok dipantau setiap hari agar selalu siap saat dibutuhkan.</p>
+          <h3 class="font-bold text-slate-800 text-lg mb-2">Harga Bersahabat</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">Harga barang konsisten dan terjangkau untuk kebutuhan belanja harian keluarga Anda.</p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100/80 text-center hover:bg-white hover:shadow-md transition-all duration-200">
+          <div class="w-14 h-14 bg-blue-100 text-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
+            <i class="fa-solid fa-boxes-stacked"></i>
           </div>
-          <div class="p-6">
-            <i class="fa-solid fa-heart text-3xl text-yellow-500 mb-3"></i>
-            <h3 class="font-semibold mb-2">Pelayanan Ramah</h3>
-            <p class="text-sm text-gray-600">Dilayani dengan sepenuh hati seperti belanja di toko keluarga.</p>
+          <h3 class="font-bold text-slate-800 text-lg mb-2">Stok Selalu Siap</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">Ketersediaan sembako dipantau dan diperbarui berkala sehingga selalu siap dibeli.</p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100/80 text-center hover:bg-white hover:shadow-md transition-all duration-200">
+          <div class="w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
+            <i class="fa-solid fa-heart"></i>
           </div>
+          <h3 class="font-bold text-slate-800 text-lg mb-2">Pelayanan Ramah</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">Dilayani dengan hangat dan ramah seperti berbelanja di toko tetangga terdekat.</p>
         </div>
       </div>
     </section>
+
   </main>
 
   <!-- Footer -->

@@ -2,7 +2,7 @@
   {
     "id": 1,
     "username": "admin",
-    "password": "password123",
+    "password": "123",
     "name": "Admin Toko Berkah",
     "role": "admin"
   }

@@ -1,0 +1,7 @@
+{
+  "ignore": [
+    "public/uploads/*",
+    "data/products.json",
+    "sessions/*"
+  ]
+}

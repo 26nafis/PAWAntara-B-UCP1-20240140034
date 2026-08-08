@@ -1,105 +1,167 @@
-<header class="bg-blue-800 shadow-md sticky top-0 z-50 border-b-4 border-yellow-400">
-  <nav class="max-w-6xl mx-auto px-4" aria-label="Navigasi utama">
-    <div class="flex items-center justify-between h-16">
-      <!-- Logo -->
-      <a href="/" class="flex items-center gap-2 text-white font-bold text-xl">
-        <i class="fa-solid fa-basket-shopping text-red-500"></i>
-        <span><%= siteName %></span>
+<header class="bg-blue-900/95 backdrop-blur-md text-white sticky top-0 z-50 border-b-4 border-yellow-400 shadow-lg">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Navigasi utama">
+    <div class="flex items-center justify-between h-16 sm:h-20">
+      
+      <!-- Logo & Brand Name (Menggunakan Gambar) -->
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-yellow-400 flex items-center justify-center shadow-md overflow-hidden transition-transform duration-300 group-hover:scale-105 border border-yellow-300">
+          <img 
+            src="/images/logo.png" 
+            alt="Logo Toko Berkah" 
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="flex flex-col">
+          <span class="font-black text-lg tracking-tight text-white group-hover:text-yellow-300 transition-colors">
+            <%= typeof siteName !== 'undefined' ? siteName : 'Toko Berkah' %>
+          </span>
+          <span class="text-[10px] text-blue-200 font-medium tracking-widest uppercase -mt-1">
+            Sembako Ibu Aries
+          </span>
+        </div>
       </a>
 
       <!-- Menu Desktop -->
-      <ul class="hidden md:flex items-center gap-1">
-        <li>
-          <a href="/"
-             class="px-4 py-2 rounded-md text-sm font-medium transition <%= activePage === 'home' ? 'bg-blue-900 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' %>">
-            Beranda
-          </a>
-        </li>
-        <li>
-          <a href="/produk"
-             class="px-4 py-2 rounded-md text-sm font-medium transition <%= activePage === 'produk' ? 'bg-blue-900 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' %>">
-            Produk
-          </a>
-        </li>
-        <li>
-          <a href="/tanya-ai"
-             class="px-4 py-2 rounded-md text-sm font-medium transition <%= activePage === 'tanya-ai' ? 'bg-blue-900 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' %>">
-            Tanya AI
-          </a>
-        </li>
-      </ul>
+      <div class="hidden md:flex items-center gap-6">
+        <ul class="flex items-center gap-1 bg-blue-950/50 p-1.5 rounded-2xl border border-blue-800/60">
+          <li>
+            <a href="/"
+               class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 block <%= (typeof activePage !== 'undefined' && activePage === 'home') ? 'bg-yellow-400 text-blue-950 shadow-md' : 'text-blue-100 hover:text-white hover:bg-blue-800/60' %>">
+              <i class="fa-solid fa-house text-xs mr-1.5"></i>Beranda
+            </a>
+          </li>
+          <li>
+            <a href="/produk"
+               class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 block <%= (typeof activePage !== 'undefined' && activePage === 'produk') ? 'bg-yellow-400 text-blue-950 shadow-md' : 'text-blue-100 hover:text-white hover:bg-blue-800/60' %>">
+              <i class="fa-solid fa-boxes-stacked text-xs mr-1.5"></i>Katalog Produk
+            </a>
+          </li>
+          <li>
+            <a href="/tanya-ai"
+               class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 block <%= (typeof activePage !== 'undefined' && activePage === 'tanya-ai') ? 'bg-yellow-400 text-blue-950 shadow-md' : 'text-blue-100 hover:text-white hover:bg-blue-800/60' %>">
+              <i class="fa-solid fa-robot text-xs text-yellow-300 mr-1.5"></i>Tanya AI
+            </a>
+          </li>
+        </ul>
+
+        <!-- User Authentication State (Desktop) -->
+        <div class="flex items-center gap-2">
+          <% if (typeof user !== 'undefined' && user) { %>
+            <a href="/dashboard"
+               class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 <%= (typeof activePage !== 'undefined' && activePage === 'dashboard') ? 'bg-yellow-400 text-blue-950 shadow-md' : 'bg-blue-800 text-white hover:bg-blue-700' %>">
+              <i class="fa-solid fa-gauge text-xs mr-1.5"></i>Dashboard
+            </a>
+            <button id="logoutBtn" 
+                    class="border border-red-400/50 bg-red-600/20 hover:bg-red-600 text-red-100 hover:text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center gap-1.5">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              Logout (<%= user.username %>)
+            </button>
+          <% } else { %>
+            <a href="/login" 
+               class="bg-yellow-400 hover:bg-yellow-300 text-blue-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-md transition-all duration-200 flex items-center gap-1.5">
+              <i class="fa-solid fa-user-lock"></i>
+              Login Admin
+            </a>
+          <% } %>
+        </div>
+      </div>
 
       <!-- Tombol Hamburger (Mobile) -->
-      <button
-        id="hamburger-btn"
-        type="button"
-        class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-white"
-        aria-controls="mobile-menu"
-        aria-expanded="false"
-        aria-label="Buka menu navigasi"
-      >
+      <button id="hamburger-btn"
+              type="button"
+              class="md:hidden inline-flex items-center justify-center p-2.5 rounded-xl text-blue-200 hover:text-white hover:bg-blue-800/60 focus:outline-none transition-colors"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+              aria-label="Buka menu navigasi">
         <i class="fa-solid fa-bars text-xl" id="hamburger-icon"></i>
       </button>
+
     </div>
 
     <!-- Menu Mobile (di-toggle via JS) -->
-    <div id="mobile-menu" class="md:hidden hidden pb-4">
+    <div id="mobile-menu" class="hidden md:hidden border-t border-blue-800/60 bg-blue-950/95 backdrop-blur-lg px-2 pt-3 pb-6 space-y-2">
       <ul class="flex flex-col gap-1">
         <li>
           <a href="/"
-             class="block px-4 py-2 rounded-md text-sm font-medium <%= activePage === 'home' ? 'bg-blue-900 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' %>">
-            Beranda
+             class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold <%= (typeof activePage !== 'undefined' && activePage === 'home') ? 'bg-yellow-400 text-blue-950' : 'text-blue-100 hover:bg-blue-800/60' %>">
+            <i class="fa-solid fa-house w-5"></i>Beranda
           </a>
         </li>
         <li>
           <a href="/produk"
-             class="block px-4 py-2 rounded-md text-sm font-medium <%= activePage === 'produk' ? 'bg-blue-900 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' %>">
-            Produk
+             class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold <%= (typeof activePage !== 'undefined' && activePage === 'produk') ? 'bg-yellow-400 text-blue-950' : 'text-blue-100 hover:bg-blue-800/60' %>">
+            <i class="fa-solid fa-boxes-stacked w-5"></i>Katalog Produk
           </a>
         </li>
         <li>
           <a href="/tanya-ai"
-             class="block px-4 py-2 rounded-md text-sm font-medium <%= activePage === 'tanya-ai' ? 'bg-blue-900 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' %>">
-            Tanya AI
+             class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold <%= (typeof activePage !== 'undefined' && activePage === 'tanya-ai') ? 'bg-yellow-400 text-blue-950' : 'text-blue-100 hover:bg-blue-800/60' %>">
+            <i class="fa-solid fa-robot w-5 text-yellow-300"></i>Tanya AI
           </a>
+        </li>
+
+        <!-- Auth Section Mobile -->
+        <li class="pt-2 border-t border-blue-800/60 mt-2">
+          <% if (typeof user !== 'undefined' && user) { %>
+            <a href="/dashboard"
+               class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold mb-2 <%= (typeof activePage !== 'undefined' && activePage === 'dashboard') ? 'bg-yellow-400 text-blue-950' : 'bg-blue-800 text-white' %>">
+              <i class="fa-solid fa-gauge w-5"></i>Dashboard
+            </a>
+            <button id="logoutBtnMobile" 
+                    class="w-full text-left flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold bg-red-600/20 text-red-200 hover:bg-red-600 hover:text-white transition-colors">
+              <i class="fa-solid fa-right-from-bracket w-5"></i>Logout (<%= user.username %>)
+            </button>
+          <% } else { %>
+            <a href="/login" 
+               class="flex items-center justify-center gap-2 w-full bg-yellow-400 text-blue-950 font-bold text-sm px-4 py-2.5 rounded-xl shadow-md">
+              <i class="fa-solid fa-user-lock"></i>Login Admin
+            </a>
+          <% } %>
         </li>
       </ul>
     </div>
   </nav>
-  
-  <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="/"><%= siteName %></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link <%= activePage === 'home' ? 'active' : '' %>" href="/">Beranda</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <%= activePage === 'produk' ? 'active' : '' %>" href="/produk">Katalog Produk</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <%= activePage === 'tanya-ai' ? 'active' : '' %>" href="/tanya-ai">Tanya AI</a>
-        </li>
-      </ul>
-      <ul class="navbar-nav">
-        <% if (user) { %>
-          <li class="nav-item">
-            <a class="nav-link <%= activePage === 'dashboard' ? 'active' : '' %>" href="/dashboard">Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <button id="logoutBtn" class="btn btn-outline-light ms-2 btn-sm">Logout (<%= user.username %>)</button>
-          </li>
-        <% } else { %>
-          <li class="nav-item">
-            <a class="btn btn-light btn-sm text-success fw-bold" href="/login">Login Admin</a>
-          </li>
-        <% } %>
-      </ul>
-    </div>
-  </div>
-</nav>
 </header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('hamburger-btn');
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('hamburger-icon');
+
+    if (btn && menu && icon) {
+      btn.addEventListener('click', () => {
+        const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', !isExpanded);
+        menu.classList.toggle('hidden');
+        
+        if (menu.classList.contains('hidden')) {
+          icon.classList.remove('fa-xmark');
+          icon.classList.add('fa-bars');
+        } else {
+          icon.classList.remove('fa-bars');
+          icon.classList.add('fa-xmark');
+        }
+      });
+    }
+
+    // Handler Logout
+    const logoutHandler = async () => {
+      if (confirm('Apakah Anda yakin ingin keluar?')) {
+        try {
+          const res = await fetch('/api/auth/logout', { method: 'POST' });
+          if (res.ok) {
+            window.location.href = '/login';
+          } else {
+            window.location.href = '/logout';
+          }
+        } catch (err) {
+          window.location.href = '/logout';
+        }
+      }
+    };
+
+    document.getElementById('logoutBtn')?.addEventListener('click', logoutHandler);
+    document.getElementById('logoutBtnMobile')?.addEventListener('click', logoutHandler);
+  });
+</script>

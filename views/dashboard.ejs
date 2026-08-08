@@ -1,72 +1,142 @@
-<%- include('partials/navbar') %>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= typeof title !== 'undefined' ? title : 'Dashboard Admin' %> | <%= typeof siteName !== 'undefined' ? siteName : 'Toko Berkah' %></title>
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen font-sans antialiased">
 
-<div class="container my-5">
-  <h2 class="mb-4">Dashboard Kelola Produk</h2>
+  <!-- Header / Navbar -->
+  <%- include('partials/navbar') %>
 
-  <div class="row">
-    <!-- Form Produk -->
-    <div class="col-md-4 mb-4">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 id="formTitle">Tambah Produk Baru</h5>
-          <form id="productForm">
-            <input type="hidden" id="productId" />
+  <!-- Main Content Container -->
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Header Page Title -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Dashboard Kelola Produk</h2>
+        <p class="text-slate-500 text-sm mt-1">Atur katalog produk, stok, dan harga toko Anda.</p>
+      </div>
+      <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-900 font-bold px-4 py-2 rounded-xl border border-blue-100 text-xs">
+        <i class="fa-solid fa-user-shield text-blue-800"></i>
+        <span>Login sebagai Admin</span>
+      </div>
+    </div>
 
-            <div class="mb-2">
-              <label for="name" class="form-label">Nama Produk</label>
-              <input type="text" id="name" class="form-control" required />
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Form Produk (Samping Kiri / Kolom 4) -->
+      <div class="lg:col-span-4">
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sticky top-24">
+          
+          <h5 id="formTitle" class="text-lg font-extrabold text-slate-900 mb-4 pb-3 border-b border-slate-100 flex items-center gap-2">
+            <i class="fa-solid fa-square-plus text-amber-500"></i>
+            Tambah Produk Baru
+          </h5>
+
+          <!-- Form dengan Multipart/Form-data untuk upload berkas -->
+          <form id="productForm" class="space-y-4" enctype="multipart/form-data">
+            <!-- Hidden Input ID untuk Mode Edit -->
+            <input type="hidden" id="productId" name="productId" />
+
+            <div>
+              <label for="name" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Produk</label>
+              <input type="text" id="name" name="name" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="Contoh: Beras Premium 5kg" required />
             </div>
 
-            <div class="mb-2">
-              <label for="category" class="form-label">Kategori</label>
-              <input type="text" id="category" class="form-control" required />
+            <div>
+              <label for="category" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kategori</label>
+              <input type="text" id="category" name="category" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="Contoh: Sembako" required />
             </div>
 
-            <div class="mb-2">
-              <label for="price" class="form-label">Harga (Rp)</label>
-              <input type="number" id="price" class="form-control" required />
+            <!-- Tambahan Input Field Deskripsi Produk -->
+            <div>
+              <label for="description" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Deskripsi Produk</label>
+              <textarea id="description" name="description" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="Tuliskan deskripsi singkat mengenai produk..."></textarea>
             </div>
 
-            <div class="mb-2">
-              <label for="stock" class="form-label">Stok</label>
-              <input type="number" id="stock" class="form-control" required />
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="price" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Harga (Rp)</label>
+                <input type="number" id="price" name="price" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="72000" required />
+              </div>
+
+              <div>
+                <label for="stock" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Stok</label>
+                <input type="number" id="stock" name="stock" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="25" required />
+              </div>
             </div>
 
-            <div class="mb-3">
-              <label for="image" class="form-label">URL Gambar</label>
-              <input type="url" id="image" class="form-control" />
+            <!-- File Input untuk Gambar Produk -->
+            <div>
+              <label for="image" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Gambar Produk</label>
+              <input type="file" id="image" name="image" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all cursor-pointer" />
             </div>
 
-            <button type="submit" class="btn btn-success w-100 mb-2">Simpan</button>
-            <button type="button" id="btnCancel" class="btn btn-secondary w-100 d-none">Batal</button>
+            <div class="pt-2 space-y-2">
+              <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md shadow-blue-900/20 active:scale-[0.98]">
+                Simpan
+              </button>
+              
+              <!-- Tombol Batal dikontrol JS menggunakan kelas 'hidden' -->
+              <button type="button" id="btnCancel" class="hidden w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-sm transition-all">
+                Batal
+              </button>
+            </div>
           </form>
+
         </div>
       </div>
-    </div>
 
-    <!-- Tabel Produk -->
-    <div class="col-md-8">
-      <div class="table-responsive shadow-sm rounded">
-        <table class="table table-hover align-middle bg-white mb-0">
-          <thead class="table-success">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Gambar</th>
-              <th scope="col">Nama</th>
-              <th scope="col">Kategori</th>
-              <th scope="col">Harga</th>
-              <th scope="col">Stok</th>
-              <th scope="col">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="productTableBody">
-            <!-- Diisi via Fetch API -->
-          </tbody>
-        </table>
+      <!-- Tabel Produk (Samping Kanan / Kolom 8) -->
+      <div class="lg:col-span-8">
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+          
+          <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+            <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-boxes-stacked text-blue-900"></i>
+              Daftar Produk
+            </h3>
+          </div>
+
+          <!-- Table Wrapper -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-100 text-[11px] font-black uppercase text-slate-500 tracking-wider">
+                  <th scope="col" class="py-3.5 px-4">#</th>
+                  <th scope="col" class="py-3.5 px-4">Gambar</th>
+                  <th scope="col" class="py-3.5 px-4">Nama</th>
+                  <th scope="col" class="py-3.5 px-4">Kategori</th>
+                  <th scope="col" class="py-3.5 px-4">Harga</th>
+                  <th scope="col" class="py-3.5 px-4">Stok</th>
+                  <th scope="col" class="py-3.5 px-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody" class="divide-y divide-slate-100 text-sm font-medium text-slate-700">
+                <!-- Data produk akan di-render secara dinamis melalui Fetch API di dashboard.js -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<script src="/js/dashboard.js"></script>
-<%- include('partials/footer') %>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <%- include('partials/footer') %>
+
+  <!-- JavaScript Dashboard -->
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

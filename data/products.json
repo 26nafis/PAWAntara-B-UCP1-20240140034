@@ -1,0 +1,47 @@
+[
+  {
+    "id": 2,
+    "name": "Minyak Goreng 2L",
+    "price": 34000,
+    "stock": 10,
+    "category": "Sembako",
+    "image": "/uploads/product-1786213874626-549568607.jpg",
+    "description": "merek sania"
+  },
+  {
+    "id": 3,
+    "name": "Gula Pasir 1kg",
+    "price": 17500,
+    "stock": 30,
+    "category": "Sembako",
+    "image": "/uploads/product-1786213961490-107523230.jpg",
+    "description": "gulaku"
+  },
+  {
+    "id": 4,
+    "name": "Teh Celup Celup",
+    "price": 8500,
+    "stock": 40,
+    "category": "Minuman",
+    "image": "/uploads/product-1786214000149-873476529.jpg",
+    "description": "sosro"
+  },
+  {
+    "id": 5,
+    "name": "beras premium",
+    "price": 15000,
+    "stock": 15,
+    "category": "Sembako",
+    "image": "/uploads/product-1786214136235-539590092.jpg",
+    "description": ""
+  },
+  {
+    "id": 6,
+    "name": "aqua 600ml",
+    "category": "Minuman",
+    "description": "minuman aqua 600ml",
+    "price": 3000,
+    "stock": 122,
+    "image": "/uploads/product-1786214894589-341507259.jpg"
+  }
+]
