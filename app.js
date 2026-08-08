@@ -1,49 +1,78 @@
 // app.js
-// Entry point server Express - Toko Berkah (Sprint 1)
+// Entry point server Express - Toko Berkah Ibu Aries (Sprint 2 Integrated)
 
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
-const products = require("./data/products");
+const session = require("express-session");
+
+// Import Middleware Custom
+const loggerMiddleware = require("./middleware/logger");
+const { requireAuthPage } = require("./middleware/auth");
+
+// Import Routers REST API
+const authApiRouter = require("./routes/api/auth");
+const productsApiRouter = require("./routes/api/products");
+const chatApiRouter = require("./routes/api/chat");
+
+// Data produk lokal (digunakan untuk SSR EJS)
+const products = require("./data/products.json");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ------------------------------------------------------
-// View engine setup (EJS)
+// View Engine & Static Assets
 // ------------------------------------------------------
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
-// ------------------------------------------------------
-// Static assets (CSS/JS/gambar) lewat express.static
-// ------------------------------------------------------
 app.use(express.static(path.join(__dirname, "public")));
 
-// Middleware bawaan untuk parsing form (dipakai form Tanya AI walau belum ada logic balasan)
+// Parsing Body (Form & JSON)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // ------------------------------------------------------
-// Helper: cari produk berdasarkan id
+// Middleware Session & Custom Logger
 // ------------------------------------------------------
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "berkah_jaya_secret_key_2026",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 }, // Session berlaku 1 jam
+  })
+);
+
+// Panggil Logger Custom Middleware
+app.use(loggerMiddleware);
+
+// Middleware Global res.locals (SOLUSI ERROR "user is not defined")
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  res.locals.siteName = "Toko Berkah Ibu Aries";
+  next();
+});
+
+// Helper: cari produk berdasarkan id
 function findProductById(id) {
   const numericId = Number(id);
   if (Number.isNaN(numericId)) return null;
   return products.find((p) => p.id === numericId) || null;
 }
 
-// Data yang dipakai untuk navbar (biar active-link konsisten di semua halaman)
+// Helper: base locals untuk active-link navbar
 function baseLocals(activePage) {
-  return { activePage, siteName: "Toko Berkah Ibu Aries" };
+  return { activePage };
 }
 
 // ========================================================
-// ROUTES - HALAMAN (Server-side render EJS)
+// ROUTES - WEB VIEWS (EJS)
 // ========================================================
 
-// GET / -> Beranda: hero section + preview beberapa produk
+// GET / -> Beranda
 app.get("/", (req, res) => {
-  const previewProducts = products.slice(0, 4); // ambil 4 produk pertama sebagai preview
+  const previewProducts = products.slice(0, 4);
   res.render("index", {
     ...baseLocals("home"),
     title: "Beranda",
@@ -51,7 +80,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// GET /produk -> Daftar semua produk + filter lewat query string (?kategori=&search=)
+// GET /produk -> Daftar & Filter Produk
 app.get("/produk", (req, res) => {
   const { kategori, search } = req.query;
   let filteredProducts = [...products];
@@ -69,7 +98,6 @@ app.get("/produk", (req, res) => {
     );
   }
 
-  // Daftar kategori unik untuk dropdown filter
   const categories = [...new Set(products.map((p) => p.category))];
 
   res.render("produk", {
@@ -83,7 +111,7 @@ app.get("/produk", (req, res) => {
   });
 });
 
-// GET /produk/:id -> Detail 1 produk (route dinamis)
+// GET /produk/:id -> Detail Produk
 app.get("/produk/:id", (req, res) => {
   const product = findProductById(req.params.id);
 
@@ -102,7 +130,7 @@ app.get("/produk/:id", (req, res) => {
   });
 });
 
-// GET /tanya-ai -> Tampilan chat + form (belum ada logic balasan)
+// GET /tanya-ai -> Halaman Chat AI
 app.get("/tanya-ai", (req, res) => {
   res.render("tanya-ai", {
     ...baseLocals("tanya-ai"),
@@ -110,22 +138,32 @@ app.get("/tanya-ai", (req, res) => {
   });
 });
 
-// ========================================================
-// ROUTES - REST API (Read-only, fondasi Sprint 2)
-// ========================================================
+// GET /login -> Halaman Login Admin
+app.get("/login", (req, res) => {
+  if (req.session.user) return res.redirect("/dashboard");
+  res.render("login", {
+    ...baseLocals("login"),
+    title: "Login Admin",
+  });
+});
 
-// GET /api/products -> mengembalikan seluruh data produk dummy dalam format JSON
-app.get("/api/products", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Berhasil mengambil seluruh data produk",
-    total: products.length,
-    data: products,
+// GET /dashboard -> Halaman Admin (Dilindungi Auth Guard)
+app.get("/dashboard", requireAuthPage, (req, res) => {
+  res.render("dashboard", {
+    ...baseLocals("dashboard"),
+    title: "Dashboard Admin",
   });
 });
 
 // ========================================================
-// 404 HANDLER - untuk route/halaman yang tidak ada sama sekali
+// ROUTES - REST API (Sprint 2)
+// ========================================================
+app.use("/api/auth", authApiRouter);
+app.use("/api/products", productsApiRouter);
+app.use("/api/chat", chatApiRouter);
+
+// ========================================================
+// 404 HANDLER
 // ========================================================
 app.use((req, res) => {
   res.status(404).render("404", {
