@@ -36,9 +36,12 @@
       <div class="lg:col-span-4">
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sticky top-24">
           
-          <h5 id="formTitle" class="text-lg font-extrabold text-slate-900 mb-4 pb-3 border-b border-slate-100 flex items-center gap-2">
-            <i class="fa-solid fa-square-plus text-amber-500"></i>
-            Tambah Produk Baru
+          <h5 id="formTitle" class="text-lg font-extrabold text-slate-900 mb-4 pb-3 border-b border-slate-100 flex items-center justify-between">
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-square-plus text-amber-500"></i>
+              <span>Tambah Produk Baru</span>
+            </span>
+            <span id="editBadge" class="hidden text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full uppercase">Mode Edit</span>
           </h5>
 
           <!-- Form dengan Multipart/Form-data untuk upload berkas -->
@@ -56,7 +59,7 @@
               <input type="text" id="category" name="category" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="Contoh: Sembako" required />
             </div>
 
-            <!-- Tambahan Input Field Deskripsi Produk -->
+            <!-- Field Deskripsi Produk -->
             <div>
               <label for="description" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Deskripsi Produk</label>
               <textarea id="description" name="description" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="Tuliskan deskripsi singkat mengenai produk..."></textarea>
@@ -64,13 +67,41 @@
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label for="price" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Harga (Rp)</label>
-                <input type="number" id="price" name="price" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="72000" required />
+                <label for="price" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Harga Ecer (Rp)</label>
+                <input type="number" id="price" name="price" min="0" step="any" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="15000" required />
               </div>
 
               <div>
-                <label for="stock" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Stok</label>
-                <input type="number" id="stock" name="stock" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="25" required />
+                <label for="stock" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Stok (Ecer)</label>
+                <input type="number" id="stock" name="stock" min="0" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="25" required />
+              </div>
+            </div>
+
+            <!-- Field Tambahan: Informasi Dus (Stok, Isi, & Harga Dus) -->
+            <div class="pt-3 border-t border-slate-100 space-y-3">
+              <span class="block text-xs font-bold text-slate-800 uppercase tracking-wider">Opsi Penjualan Per Dus</span>
+              
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="boxQty" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+                    Stok Dus <span class="normal-case text-[10px] text-slate-400 font-normal">(opsional)</span>
+                  </label>
+                  <input type="number" id="boxQty" name="boxQty" min="0" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="5" />
+                </div>
+
+                <div>
+                  <label for="itemsPerBox" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+                    Isi / Dus <span class="normal-case text-[10px] text-slate-400 font-normal">(opsional)</span>
+                  </label>
+                  <input type="number" id="itemsPerBox" name="itemsPerBox" min="0" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="24" />
+                </div>
+              </div>
+
+              <div>
+                <label for="boxPrice" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+                  Harga / Dus (Rp) <span class="normal-case text-[10px] text-slate-400 font-normal">(opsional)</span>
+                </label>
+                <input type="number" id="boxPrice" name="boxPrice" min="0" step="any" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all" placeholder="Contoh: 150000" />
               </div>
             </div>
 
@@ -78,10 +109,14 @@
             <div>
               <label for="image" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Gambar Produk</label>
               <input type="file" id="image" name="image" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all cursor-pointer" />
+              <div id="imagePreviewContainer" class="mt-2 hidden">
+                <p class="text-[11px] text-slate-400 mb-1">Gambar saat ini:</p>
+                <img id="imagePreview" src="" alt="Preview" class="w-16 h-16 object-cover rounded-lg border" />
+              </div>
             </div>
 
             <div class="pt-2 space-y-2">
-              <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md shadow-blue-900/20 active:scale-[0.98]">
+              <button type="submit" id="btnSubmit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md shadow-blue-900/20 active:scale-[0.98]">
                 Simpan
               </button>
               
@@ -115,8 +150,9 @@
                   <th scope="col" class="py-3.5 px-4">Gambar</th>
                   <th scope="col" class="py-3.5 px-4">Nama</th>
                   <th scope="col" class="py-3.5 px-4">Kategori</th>
-                  <th scope="col" class="py-3.5 px-4">Harga</th>
-                  <th scope="col" class="py-3.5 px-4">Stok</th>
+                  <th scope="col" class="py-3.5 px-4">Harga Ecer</th>
+                  <th scope="col" class="py-3.5 px-4">Stok Ecer</th>
+                  <th scope="col" class="py-3.5 px-4">Opsi Dus (Harga / Stok / Isi)</th>
                   <th scope="col" class="py-3.5 px-4 text-center">Aksi</th>
                 </tr>
               </thead>

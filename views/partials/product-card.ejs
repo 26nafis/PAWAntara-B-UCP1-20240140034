@@ -1,0 +1,87 @@
+<%# 
+  Partial: Product Card
+  Mendukung properti bahasa Inggris (price, boxPrice, itemsPerBox, stock) 
+  maupun bahasa Indonesia (harga, hargaDus, isiDus, stok)
+%>
+
+<% if (typeof product !== 'undefined' && product) { %>
+  <% 
+    // Fallback otomatis untuk penamaan variabel dari controller
+    const nominalHarga = product.price ?? product.harga ?? product.hargaEceran ?? 0;
+    const nominalDus = product.boxPrice ?? product.hargaDus ?? product.harga_dus ?? null;
+    const totalIsiDus = product.itemsPerBox ?? product.isiDus ?? product.isi_dus ?? null;
+    const totalStok = product.stock ?? product.stok ?? null;
+  %>
+
+  <article class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden flex flex-col justify-between border border-gray-100">
+    <div>
+      <!-- Gambar Produk & Badge Kategori -->
+      <div class="relative w-full h-44 bg-gray-100 overflow-hidden">
+        <img 
+          src="<%= product.image || product.gambar || '/images/placeholder.jpg' %>" 
+          alt="<%= product.name || product.nama || 'Produk' %>" 
+          class="w-full h-full object-cover"
+          onerror="this.onerror=null; this.src='/images/placeholder.jpg';"
+        />
+        <% if (product.category || product.kategori) { %>
+          <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-md text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border border-gray-100 shadow-sm">
+            <%= product.category || product.kategori %>
+          </span>
+        <% } %>
+      </div>
+
+      <!-- Info Produk -->
+      <div class="p-4 flex flex-col">
+        <h3 class="font-semibold text-gray-800 mb-2 line-clamp-2 text-sm md:text-base">
+          <%= product.name || product.nama || 'Nama Produk' %>
+        </h3>
+
+        <!-- Harga Eceran (Per Pcs) -->
+        <div class="flex items-baseline gap-1 mb-1">
+          <span class="text-xs text-gray-400 font-semibold">Rp</span>
+          <span class="text-red-600 font-bold text-lg">
+            <%= Number(nominalHarga).toLocaleString('id-ID') %>
+          </span>
+          <span class="text-xs text-gray-400 font-normal">/ pcs</span>
+        </div>
+
+        <!-- Informasi Harga Dus & Isi Dus -->
+        <% if (nominalDus || totalIsiDus) { %>
+          <div class="mt-2 pt-2 border-t border-gray-100 flex flex-col gap-1 text-xs">
+            
+            <% if (nominalDus) { %>
+              <div class="flex items-center gap-1.5 font-medium text-gray-700">
+                <span class="text-gray-400 text-[11px]">Dus:</span>
+                <span class="text-blue-900 font-bold">Rp <%= Number(nominalDus).toLocaleString('id-ID') %></span>
+              </div>
+            <% } %>
+
+            <% if (totalIsiDus) { %>
+              <div class="flex items-center gap-1.5 text-gray-500 text-[11px]">
+                <i class="fa-solid fa-box text-amber-500 text-[10px]"></i>
+                <span>Isi: <strong class="text-gray-700"><%= totalIsiDus %></strong> pcs / dus</span>
+              </div>
+            <% } %>
+
+          </div>
+        <% } %>
+
+        <!-- Stok Produk -->
+        <% if (totalStok !== null) { %>
+          <p class="text-[11px] text-gray-400 mt-2">
+            Stok: <span class="font-medium text-gray-600"><%= totalStok %></span>
+          </p>
+        <% } %>
+
+      </div>
+    </div>
+
+    <!-- Tombol Aksi -->
+    <div class="p-4 pt-0">
+      <a href="/produk/<%= product.id || '#' %>"
+         class="w-full inline-block text-center bg-blue-800 hover:bg-blue-900 text-white text-sm font-medium py-2 rounded-lg transition shadow-sm">
+        Lihat Detail
+      </a>
+    </div>
+  </article>
+<% } %>

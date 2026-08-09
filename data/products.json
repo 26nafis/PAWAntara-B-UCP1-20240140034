@@ -43,5 +43,17 @@
     "price": 3000,
     "stock": 122,
     "image": "/uploads/product-1786214894589-341507259.jpg"
+  },
+  {
+    "id": 7,
+    "name": "teh gelas",
+    "category": "Minuman",
+    "description": "minumam teh gelas bisa satuan bisa/kardus",
+    "price": 15000,
+    "stock": 25,
+    "boxQty": 5,
+    "itemsPerBox": 23,
+    "image": "/uploads/product-1786272145280-883604603.jpg",
+    "boxPrice": 20000
   }
 ]

@@ -71,7 +71,7 @@
           <div class="relative w-full max-w-md">
             <div class="bg-gradient-to-tr from-white/10 to-white/5 border border-white/20 rounded-3xl p-6 backdrop-blur-xl shadow-2xl">
               
-              <!-- Card Inner (Latar Putih Telah Diganti dengan Transparan Kaca) -->
+              <!-- Card Inner -->
               <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 text-center shadow-inner flex flex-col items-center justify-center min-h-[280px]">
                 
                 <!-- Lingkaran Foto Logo -->
@@ -111,41 +111,11 @@
         </a>
       </div>
 
-      <!-- Grid Produk -->
+      <!-- Grid Produk (Memakai Partial product-card) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <% if (typeof previewProducts !== 'undefined' && previewProducts.length > 0) { %>
           <% previewProducts.forEach(function(product) { %>
-            <article class="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between hover:-translate-y-1">
-              <div>
-                <!-- Product Image Box -->
-                <div class="relative bg-slate-100 h-48 w-full overflow-hidden">
-                  <img src="<%= product.image %>" alt="<%= product.name %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-800 text-[10px] font-black px-2.5 py-1 rounded-md shadow-sm uppercase tracking-wider border border-slate-100">
-                    <%= product.category %>
-                  </span>
-                </div>
-                
-                <!-- Product Info -->
-                <div class="p-5">
-                  <h3 class="font-bold text-slate-800 text-base mb-2 group-hover:text-blue-800 transition-colors line-clamp-2">
-                    <%= product.name %>
-                  </h3>
-                  <div class="flex items-baseline gap-1">
-                    <span class="text-xs text-slate-400 font-semibold">Rp</span>
-                    <span class="text-xl font-black text-red-600">
-                      <%= product.price.toLocaleString('id-ID') %>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Card Action -->
-              <div class="p-5 pt-0">
-                <a href="/produk/<%= product.id %>" class="w-full bg-slate-900 text-white hover:bg-blue-800 text-center py-2.5 rounded-xl block font-bold text-sm transition-colors duration-200 shadow-sm">
-                  Lihat Detail
-                </a>
-              </div>
-            </article>
+            <%- include('partials/product-card', { product: product }) %>
           <% }); %>
         <% } else { %>
           <div class="col-span-full bg-white rounded-2xl p-12 text-center border border-slate-100">

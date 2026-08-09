@@ -62,9 +62,35 @@ app.use((req, res, next) => {
   next();
 });
 
+// Helper Normalisasi Data Produk (Mencegah harga undefined/null di EJS View)
+function normalizeProduct(p) {
+  if (!p) return null;
+  return {
+    ...p,
+    id: p.id,
+    name: p.name || p.nama || "Produk",
+    category: p.category || p.kategori || "Sembako",
+    image: p.image || p.gambar || "/images/placeholder.jpg",
+    price: Number(p.price ?? p.harga ?? p.hargaEceran ?? 0),
+    boxPrice: (p.boxPrice ?? p.hargaDus ?? p.harga_dus) !== undefined && (p.boxPrice ?? p.hargaDus ?? p.harga_dus) !== null 
+      ? Number(p.boxPrice ?? p.hargaDus ?? p.harga_dus) 
+      : null,
+    itemsPerBox: (p.itemsPerBox ?? p.isiDus ?? p.isi_dus) !== undefined && (p.itemsPerBox ?? p.isiDus ?? p.isi_dus) !== null 
+      ? Number(p.itemsPerBox ?? p.isiDus ?? p.isi_dus) 
+      : null,
+    stock: Number(p.stock ?? p.stok ?? 0),
+  };
+}
+
+// Helper Ambil Semua Produk Ter-normalisasi
+function fetchNormalizedProducts() {
+  const rawProducts = typeof getProductsData === "function" ? getProductsData() : [];
+  return rawProducts.map(normalizeProduct);
+}
+
 // Helper: cari produk berdasarkan id secara dinamis
 function findProductById(id) {
-  const products = typeof getProductsData === 'function' ? getProductsData() : [];
+  const products = fetchNormalizedProducts();
   const numericId = Number(id);
   if (Number.isNaN(numericId)) return null;
   return products.find((p) => p.id === numericId) || null;
@@ -81,7 +107,7 @@ function baseLocals(activePage) {
 
 // GET / -> Beranda
 app.get("/", (req, res) => {
-  const products = typeof getProductsData === 'function' ? getProductsData() : [];
+  const products = fetchNormalizedProducts();
   const previewProducts = products.slice(0, 4);
   res.render("index", {
     ...baseLocals("home"),
@@ -92,7 +118,7 @@ app.get("/", (req, res) => {
 
 // GET /produk -> Daftar & Filter Produk
 app.get("/produk", (req, res) => {
-  const products = typeof getProductsData === 'function' ? getProductsData() : [];
+  const products = fetchNormalizedProducts();
   const { kategori, search } = req.query;
   let filteredProducts = [...products];
 

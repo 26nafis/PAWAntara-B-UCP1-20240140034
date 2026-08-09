@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const formTitle = document.getElementById('formTitle');
   const btnCancel = document.getElementById('btnCancel');
   const logoutBtn = document.getElementById('logoutBtn');
+  const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+  const imagePreview = document.getElementById('imagePreview');
+  const editBadge = document.getElementById('editBadge');
 
   // Helper untuk gambar fallback
   const getImageUrl = (url) => {
@@ -24,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.data.length === 0) {
           tableBody.innerHTML = `
             <tr>
-              <td colspan="7" class="py-8 text-center text-slate-400">
+              <td colspan="8" class="py-8 text-center text-slate-400">
                 Belum ada data produk.
               </td>
             </tr>`;
@@ -32,6 +35,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         data.data.forEach((p, idx) => {
+          // Format tampilan informasi kardus
+          let boxInfoHtml = `<span class="text-slate-400 text-xs italic">-</span>`;
+          
+          if (p.boxPrice || p.boxQty || p.itemsPerBox) {
+            const formattedBoxPrice = p.boxPrice 
+              ? `Rp ${Number(p.boxPrice).toLocaleString('id-ID')}` 
+              : '-';
+            const boxQtyText = p.boxQty !== null && p.boxQty !== undefined && p.boxQty !== '' ? `${p.boxQty} dus` : '-';
+            const itemsPerBoxText = p.itemsPerBox !== null && p.itemsPerBox !== undefined && p.itemsPerBox !== '' ? `${p.itemsPerBox} pcs/dus` : '-';
+
+            boxInfoHtml = `
+              <div class="text-xs space-y-0.5">
+                <div class="font-bold text-amber-700">${formattedBoxPrice}</div>
+                <div class="text-slate-500 text-[11px]">${boxQtyText} (${itemsPerBoxText})</div>
+              </div>
+            `;
+          }
+
           tableBody.innerHTML += `
             <tr class="hover:bg-slate-50 transition-colors">
               <td class="py-3.5 px-4 font-bold text-slate-400">${idx + 1}</td>
@@ -54,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 Rp ${Number(p.price).toLocaleString('id-ID')}
               </td>
               <td class="py-3.5 px-4 font-bold">${p.stock}</td>
+              <td class="py-3.5 px-4">${boxInfoHtml}</td>
               <td class="py-3.5 px-4 text-center">
                 <div class="flex items-center justify-center gap-1.5">
                   <button onclick="editProduct(${p.id})" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors">
@@ -78,20 +100,28 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const id = document.getElementById('productId').value;
 
-    // Buat objek FormData untuk pengiriman multipart/form-data
     const formData = new FormData();
     formData.append('name', document.getElementById('name').value);
     formData.append('category', document.getElementById('category').value);
     formData.append('price', document.getElementById('price').value);
     formData.append('stock', document.getElementById('stock').value);
 
-    // Ambil field Deskripsi Produk jika ada elemennya
+    // Field Deskripsi Produk
     const descInput = document.getElementById('description');
     if (descInput) {
       formData.append('description', descInput.value);
     }
 
-    // Ambil file berkas gambar
+    // Opsi penjualan dus (Stok Dus, Isi Dus, Harga Dus)
+    const boxQtyInput = document.getElementById('boxQty');
+    const itemsPerBoxInput = document.getElementById('itemsPerBox');
+    const boxPriceInput = document.getElementById('boxPrice');
+
+    if (boxQtyInput) formData.append('boxQty', boxQtyInput.value);
+    if (itemsPerBoxInput) formData.append('itemsPerBox', itemsPerBoxInput.value);
+    if (boxPriceInput) formData.append('boxPrice', boxPriceInput.value);
+
+    // File Berkas Gambar
     const imageInput = document.getElementById('image');
     if (imageInput && imageInput.files[0]) {
       formData.append('image', imageInput.files[0]);
@@ -101,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const method = id ? 'PUT' : 'POST';
 
     try {
-      // credentials: 'same-origin' memastikan cookie session terikut saat request
       const res = await fetch(url, {
         method,
         body: formData,
@@ -134,15 +163,37 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('price').value = p.price;
         document.getElementById('stock').value = p.stock;
 
-        // Populate field deskripsi
+        // Populate Field Deskripsi
         const descInput = document.getElementById('description');
         if (descInput) {
           descInput.value = p.description || '';
         }
 
-        formTitle.innerHTML = '<i class="fa-solid fa-pen-to-square text-amber-500 mr-1"></i> Edit Produk';
+        // Populate Field Opsi Dus
+        const boxQtyInput = document.getElementById('boxQty');
+        const itemsPerBoxInput = document.getElementById('itemsPerBox');
+        const boxPriceInput = document.getElementById('boxPrice');
+
+        if (boxQtyInput) boxQtyInput.value = p.boxQty ?? '';
+        if (itemsPerBoxInput) itemsPerBoxInput.value = p.itemsPerBox ?? '';
+        if (boxPriceInput) boxPriceInput.value = p.boxPrice ?? '';
+
+        // Tampilkan Preview Gambar jika ada gambar produk
+        if (p.image && imagePreviewContainer && imagePreview) {
+          imagePreview.src = getImageUrl(p.image);
+          imagePreviewContainer.classList.remove('hidden');
+        }
+
+        // Ubah UI Form ke Mode Edit
+        formTitle.innerHTML = `
+          <span class="flex items-center gap-2">
+            <i class="fa-solid fa-pen-to-square text-amber-500"></i>
+            <span>Edit Produk</span>
+          </span>
+        `;
+        
+        if (editBadge) editBadge.classList.remove('hidden');
         btnCancel.classList.remove('hidden');
-        btnCancel.classList.remove('d-none');
       }
     } catch (error) {
       console.error('Gagal mengambil detail produk:', error);
@@ -180,9 +231,31 @@ document.addEventListener('DOMContentLoaded', () => {
       descInput.value = '';
     }
 
-    formTitle.innerHTML = '<i class="fa-solid fa-square-plus text-amber-500 mr-1"></i> Tambah Produk Baru';
+    // Reset field opsi dus
+    const boxQtyInput = document.getElementById('boxQty');
+    const itemsPerBoxInput = document.getElementById('itemsPerBox');
+    const boxPriceInput = document.getElementById('boxPrice');
+
+    if (boxQtyInput) boxQtyInput.value = '';
+    if (itemsPerBoxInput) itemsPerBoxInput.value = '';
+    if (boxPriceInput) boxPriceInput.value = '';
+
+    // Sembunyikan image preview
+    if (imagePreviewContainer) {
+      imagePreviewContainer.classList.add('hidden');
+      if (imagePreview) imagePreview.src = '';
+    }
+
+    // Kembalikan UI Form ke Tambah Produk
+    formTitle.innerHTML = `
+      <span class="flex items-center gap-2">
+        <i class="fa-solid fa-square-plus text-amber-500"></i>
+        <span>Tambah Produk Baru</span>
+      </span>
+    `;
+
+    if (editBadge) editBadge.classList.add('hidden');
     btnCancel.classList.add('hidden');
-    btnCancel.classList.add('d-none');
   }
 
   // Handler Logout

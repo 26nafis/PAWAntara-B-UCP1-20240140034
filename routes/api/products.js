@@ -34,9 +34,10 @@ const upload = multer({ storage });
 // Helper Read & Write File JSON
 const getProductsData = () => {
   if (!fs.existsSync(productsFilePath)) return [];
-  const data = fs.readFileSync(productsFilePath, 'utf-8');
   try {
-    return JSON.parse(data);
+    const data = fs.readFileSync(productsFilePath, 'utf-8');
+    const parsed = JSON.parse(data);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
     return [];
   }
@@ -44,6 +45,13 @@ const getProductsData = () => {
 
 const saveProductsData = (data) => {
   fs.writeFileSync(productsFilePath, JSON.stringify(data, null, 2), 'utf-8');
+};
+
+// Helper Parsing Angka Opsional (Kembalikan Number atau null)
+const parseOptionalNumber = (val) => {
+  if (val === undefined || val === null || val === '') return null;
+  const num = Number(val);
+  return Number.isNaN(num) ? null : num;
 };
 
 // GET /api/products
@@ -70,11 +78,17 @@ router.get('/:id', (req, res) => {
   }
 });
 
-// POST /api/products (Tambah Produk dengan Upload Gambar, Deskripsi & Proteksi Session)
+// POST /api/products (Tambah Produk)
 router.post('/', requireAuthApi, upload.single('image'), (req, res) => {
   try {
     const { name, price, stock, category, description } = req.body;
-    if (!name || !price || stock === undefined || !category) {
+    
+    // Fallback baca key opsi dus (mendukung penamaan bahasa Inggris & Indonesia)
+    const rawBoxQty = req.body.boxQty ?? req.body.stokDus ?? req.body.stok_dus;
+    const rawItemsPerBox = req.body.itemsPerBox ?? req.body.isiDus ?? req.body.isi_dus;
+    const rawBoxPrice = req.body.boxPrice ?? req.body.hargaDus ?? req.body.harga_dus;
+
+    if (!name || price === undefined || price === '' || stock === undefined || stock === '' || !category) {
       return res.status(400).json({ status: 'fail', message: 'Data produk tidak lengkap' });
     }
 
@@ -94,6 +108,10 @@ router.post('/', requireAuthApi, upload.single('image'), (req, res) => {
       description: description || '',
       price: Number(price),
       stock: Number(stock),
+      // Parsing data kardus yang aman
+      boxQty: parseOptionalNumber(rawBoxQty),
+      itemsPerBox: parseOptionalNumber(rawItemsPerBox),
+      boxPrice: parseOptionalNumber(rawBoxPrice),
       image: imagePath
     };
 
@@ -106,11 +124,17 @@ router.post('/', requireAuthApi, upload.single('image'), (req, res) => {
   }
 });
 
-// PUT /api/products/:id (Update Produk dengan Upload Gambar Baru/Tetap, Deskripsi & Proteksi Session)
+// PUT /api/products/:id (Update Produk)
 router.put('/:id', requireAuthApi, upload.single('image'), (req, res) => {
   try {
     const productId = parseInt(req.params.id);
     const { name, price, stock, category, description } = req.body;
+    
+    // Fallback baca key opsi dus
+    const rawBoxQty = req.body.boxQty ?? req.body.stokDus ?? req.body.stok_dus;
+    const rawItemsPerBox = req.body.itemsPerBox ?? req.body.isiDus ?? req.body.isi_dus;
+    const rawBoxPrice = req.body.boxPrice ?? req.body.hargaDus ?? req.body.harga_dus;
+
     const products = getProductsData();
     const index = products.findIndex(p => p.id === productId);
 
@@ -118,7 +142,7 @@ router.put('/:id', requireAuthApi, upload.single('image'), (req, res) => {
       return res.status(404).json({ status: 'fail', message: 'Produk tidak ditemukan' });
     }
 
-    // Tentukan path gambar: gunakan file upload baru > URL body > gambar lama
+    // Tentukan path gambar
     let imagePath = products[index].image;
     if (req.file) {
       imagePath = `/uploads/${req.file.filename}`;
@@ -126,13 +150,21 @@ router.put('/:id', requireAuthApi, upload.single('image'), (req, res) => {
       imagePath = req.body.image;
     }
 
+    // Olah data kardus: jika dikirim di body gunakan nilai baru, jika tidak gunakan nilai lama
+    const parsedBoxQty = rawBoxQty !== undefined ? parseOptionalNumber(rawBoxQty) : products[index].boxQty;
+    const parsedItemsPerBox = rawItemsPerBox !== undefined ? parseOptionalNumber(rawItemsPerBox) : products[index].itemsPerBox;
+    const parsedBoxPrice = rawBoxPrice !== undefined ? parseOptionalNumber(rawBoxPrice) : products[index].boxPrice;
+
     products[index] = {
       ...products[index],
       name: name || products[index].name,
       category: category || products[index].category,
       description: description !== undefined ? description : (products[index].description || ''),
-      price: price !== undefined ? Number(price) : products[index].price,
-      stock: stock !== undefined ? Number(stock) : products[index].stock,
+      price: price !== undefined && price !== '' ? Number(price) : products[index].price,
+      stock: stock !== undefined && stock !== '' ? Number(stock) : products[index].stock,
+      boxQty: parsedBoxQty,
+      itemsPerBox: parsedItemsPerBox,
+      boxPrice: parsedBoxPrice,
       image: imagePath
     };
 
@@ -143,7 +175,7 @@ router.put('/:id', requireAuthApi, upload.single('image'), (req, res) => {
   }
 });
 
-// DELETE /api/products/:id (Proteksi Session)
+// DELETE /api/products/:id
 router.delete('/:id', requireAuthApi, (req, res) => {
   try {
     const productId = parseInt(req.params.id);
@@ -163,5 +195,7 @@ router.delete('/:id', requireAuthApi, (req, res) => {
   }
 });
 
+// Attach helper ke router object agar bisa di-destructure di app.js
+router.getProductsData = getProductsData;
+
 module.exports = router;
-module.exports.getProductsData = getProductsData;

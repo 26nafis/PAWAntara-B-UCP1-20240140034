@@ -82,27 +82,11 @@
       <% if (searchQuery) { %> dengan kata kunci "<%= searchQuery %>"<% } %>
     </p>
 
-    <!-- Grid Produk -->
+    <!-- Grid Produk (Memakai Partial product-card) -->
     <% if (allProducts.length > 0) { %>
       <section aria-label="Daftar produk" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <% allProducts.forEach(function(product) { %>
-          <article class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden flex flex-col">
-            <img src="<%= product.image %>" alt="<%= product.name %>" class="w-full h-44 object-cover" />
-            <div class="p-4 flex flex-col flex-1">
-              <span class="text-xs font-medium text-blue-800 uppercase tracking-wide mb-1">
-                <%= product.category %>
-              </span>
-              <h2 class="font-semibold text-gray-800 mb-1"><%= product.name %></h2>
-              <p class="text-red-600 font-bold mb-1">
-                Rp<%= product.price.toLocaleString('id-ID') %>
-              </p>
-              <p class="text-xs text-gray-500 mb-3">Stok: <%= product.stock %></p>
-              <a href="/produk/<%= product.id %>"
-                 class="mt-auto inline-block text-center bg-blue-800 text-white text-sm font-medium py-2 rounded-lg hover:bg-blue-900 transition">
-                Lihat Detail
-              </a>
-            </div>
-          </article>
+          <%- include('partials/product-card', { product: product }) %>
         <% }); %>
       </section>
     <% } else { %>
